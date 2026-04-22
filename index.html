@@ -6,40 +6,27 @@
   <title>Locked Site</title>
 </head>
 <body>
-  <main>
-    <h1>Locked Site</h1>
-
-    <label>
+  <div style="padding:8px;">
+    <label style="font-weight:normal;">
       Password:
       <input id="pw" type="password" autocomplete="current-password" />
     </label>
-    <br />
-    <label>
-      <input id="reveal" type="checkbox" /> Reveal password
-    </label>
-    <br />
-    <button id="hash">Hash password</button>
-
-    <pre id="out" aria-live="polite"></pre>
-  </main>
+    <button id="eye" aria-label="toggle-reveal" title="Reveal" style="margin-left:6px">👁️</button>
+  </div>
 
   <script>
-    async function sha256Hex(str) {
-      const enc = new TextEncoder();
-      const data = enc.encode(str);
-      const hash = await crypto.subtle.digest('SHA-256', data);
-      const bytes = Array.from(new Uint8Array(hash));
-      return bytes.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    document.getElementById('hash').addEventListener('click', async () => {
-      const pw = document.getElementById('pw').value || '';
-      const h = await sha256Hex(pw);
-      document.getElementById('out').textContent = JSON.stringify({ hash: h }, null, 2);
-    });
-
-    document.getElementById('reveal').addEventListener('change', (e) => {
-      document.getElementById('pw').type = e.target.checked ? 'text' : 'password';
+    // Toggle password visibility via the small eye button
+    const pw = document.getElementById('pw');
+    const eye = document.getElementById('eye');
+    eye.addEventListener('click', () => {
+      if (pw.type === 'password') {
+        pw.type = 'text';
+        eye.textContent = '🙈';
+      } else {
+        pw.type = 'password';
+        eye.textContent = '👁️';
+      }
+      pw.focus();
     });
   </script>
 </body>
